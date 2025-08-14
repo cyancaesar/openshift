@@ -1,0 +1,14 @@
+# Create a PersistenVolumeClaim with StorageClass name specified
+# If not, it will bind to the default one, `crc-csi-hostpath-provisioner`.
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: my-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 999Mi
+  storageClassName: my-storageclass
