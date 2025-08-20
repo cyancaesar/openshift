@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: enginx
+  labels:
+    deployment: enginx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      deployment: enginx
+  template:
+    metadata:
+      labels:
+        deployment: enginx
+    spec:
+      containers:
+        - name: enginx
+          image: bitnami/nginx
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+          volumeMounts:
+            - mountPath: /etc/nginx/conf.d
+              name: configmap-vol # name of the volume
+      serviceAccountName: enginx-sa
+      volumes:
+        - name: configmap-vol # name of the volume
+          configMap:
+            name: enginx-conf # this is the name used when creating ConfigMap
+            items:
+              # this is the file name inside the cm, see `oc describe cm enginx-conf`
+              - key: enginx.conf
+                path: default.conf
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: enginx
+  labels:
+    deployment: enginx
+spec:
+  ports:
+    - name: http
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+  selector:
+    deployment: enginx
