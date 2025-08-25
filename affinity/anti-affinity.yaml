@@ -1,0 +1,32 @@
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: anti1
+  labels:
+    love: ihateyou
+spec:
+  containers:
+    - name: ocp
+      image: docker.io/ocpqe/hello-pod
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: anti2
+  labels:
+    love: ihateyou
+spec:
+  containers:
+    - name: ocp
+      image: docker.io/ocpqe/hello-pod
+  affinity:
+    podAntiAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        - labelSelector:
+            matchExpressions:
+              - key: love
+                operator: In
+                values:
+                  - ihateyou
+          topologyKey: kubernetes.io/hostname
