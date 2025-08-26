@@ -1,0 +1,20 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: test-cron1
+spec:
+  schedule: "7 15 * 1 *"       
+  successfulJobsHistoryLimit: 10 
+  jobTemplate:                  
+    spec:
+      template:
+        metadata:
+          labels:               
+            parent: "test-cron1"
+        spec:
+          containers:
+          - name: nginx
+            image: nginx
+          serviceAccount: ex280-sa1
+          serviceAccountName: ex280-sa1
+          restartPolicy: OnFailure
